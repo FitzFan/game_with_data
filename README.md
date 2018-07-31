@@ -12,4 +12,4 @@
 ## preprocess
 - label_encode
 - one_hot
-- 56GB服务器，可以扛下亿级别的preprcess job
+- 56GB单机服务器，可以扛下亿级别的preprcess job
