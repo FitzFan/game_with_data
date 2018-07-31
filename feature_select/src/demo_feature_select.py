@@ -7,10 +7,11 @@
 @Version : v1.0
 """
 
-import pandas as pd
 import sys
 import numpy as np
-from multi_feature_select import feature_filter
+import pandas as pd
+
+from feature_select import feature_filter
 
 
 # load_data
