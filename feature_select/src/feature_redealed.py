@@ -12,14 +12,16 @@ import time
 import sys
 import re
 import datetime
-import pandas as pd 
 import numpy as np
+import pandas as pd 
+from scipy import stats
 
 
 class data_filter(object):
     def __init__(self, data):
         self.data = data
 
+    # 缺失值填充
     def nan_imputer(self, strategy='mean', null_base=0.2, fix_value_dict=None):
         """
         fix_value_dict: 
@@ -49,7 +51,7 @@ class data_filter(object):
 
         return self.data
 
-    # 离群点盖帽
+    # 异常值检测
     def outlier_remove(data, limit_value=10, thre=1.5):
         # limit_value是最小处理样本个数set，当独立样本大于limit_value时，认为是连续性特征，存在异常值的可能性
         feature_cnt = data.shape[1]
@@ -74,7 +76,29 @@ class data_filter(object):
 
             return data, feature_change
 
+    # 正态性检验
+    def normal_test(data, feature_name):
+        """
+        使用stats.normaltest()进行正态性检测
+            - null hypothesis: x comes from a normal distribution
+            - set alpha = 0.001
+            - if p_value <  alpha: The null hypothesis can be rejected
+            - if p_value >= alpha: The null hypothesis cannot be rejected
+        """
+        # set alpha
+        alpha = 0.001
 
+        # 开始检验
+        p_value = stats.normaltest(data[feature_name].values)[1]
 
+        # 判断正态性
+        if p_value >= alpha:
+            print feature_name, 'comes from a normal distribution'
+            print 'alpha is %s and p_value is %s' %(str(alpha), str(p_value))
+        else:
+            print feature_name, 'does not come from a normal distribution'
+            print 'alpha is %s and p_value is %s' %(str(alpha), str(p_value))
+            print '\n maybe need to do boxcox transform as following,'
+            print 'box_cox, _ = stats.boxcox(data[feature_name].values)'
+            print '* minimum of data[feature_name].values should be greater than zero'
 
-        
