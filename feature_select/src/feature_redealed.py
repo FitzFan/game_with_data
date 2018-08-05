@@ -33,7 +33,7 @@ class data_filter(object):
         columns_list = self.data.columns.values
 
         # 获取行数
-        all_cnt = data.shape[0]
+        all_cnt = self.data.shape[0]
 
         # 遍历feature
         for column in columns_list:
@@ -52,14 +52,14 @@ class data_filter(object):
         return self.data
 
     # 异常值检测
-    def outlier_remove(data, limit_value=10, thre=1.5):
+    def outlier_remove(self, limit_value=10, thre=1.5):
         # limit_value是最小处理样本个数set，当独立样本大于limit_value时，认为是连续性特征，存在异常值的可能性
-        feature_cnt = data.shape[1]
+        feature_cnt = self.data.shape[1]
         feature_change = []
         for i in range(feature_cnt):
-            if len(pd.DataFrame(data.iloc[:, i]).drop_duplicates()) >= limit_value:
-                q1 = np.percentile(np.array(data.iloc[:, i]), 25)
-                q3 = np.percentile(np.array(data.iloc[:, i]), 75)
+            if len(pd.self.dataFrame(self.data.iloc[:, i]).drop_duplicates()) >= limit_value:
+                q1 = np.percentile(np.array(self.data.iloc[:, i]), 25)
+                q3 = np.percentile(np.array(self.data.iloc[:, i]), 75)
                 """
                 复习一遍箱线图：
                 - q3-q1为四分位差, 记为qr
@@ -69,15 +69,15 @@ class data_filter(object):
                 """
                 top = q3 + thre * (q3 - q1)
                 bottom = q1 - thre * (q3 - q1)
-                data.iloc[:, i][data.iloc[:, i] > top] = top
-                data.iloc[:, i][data.iloc[:, i] < bottom] = bottom
+                self.data.iloc[:, i][self.data.iloc[:, i] > top] = top
+                self.data.iloc[:, i][self.data.iloc[:, i] < bottom] = bottom
 
                 feature_change.append(i)
 
-            return data, feature_change
+            return self.data, feature_change
 
     # 正态性检验
-    def normal_test(data, feature_name):
+    def normal_test(self, feature_name):
         """
         使用stats.normaltest()进行正态性检测
             - null hypothesis: x comes from a normal distribution
@@ -89,7 +89,7 @@ class data_filter(object):
         alpha = 0.001
 
         # 开始检验
-        p_value = stats.normaltest(data[feature_name].values)[1]
+        p_value = stats.normaltest(self.data[feature_name].values)[1]
 
         # 判断正态性
         if p_value >= alpha:
@@ -99,6 +99,15 @@ class data_filter(object):
             print feature_name, 'does not come from a normal distribution'
             print 'alpha is %s and p_value is %s' %(str(alpha), str(p_value))
             print '\n maybe need to do boxcox transform as following,'
-            print 'box_cox, _ = stats.boxcox(data[feature_name].values)'
-            print '* minimum of data[feature_name].values should be greater than zero'
+            print 'box_cox, _ = stats.boxcox(self.data[feature_name].values)'
+            print '* minimum of self.data[feature_name].values should be greater than zero'
+
+    # 取值分布异常检测
+    def value_dis_test(self, threhold=0.03):
+        for col in self.data:
+            counts = self.data[col].value_counts(normalize=True)
+            self.data = self.data.loc[self.data[col].isin(counts[counts > threshold].index), :]
+
+
+
 
