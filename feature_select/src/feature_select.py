@@ -39,6 +39,8 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
         - sk_select_fea()的返回可以直接作为model的输入，即为端对端；
         - 其它的func，返回的是column_name，需要先基于column_name筛选，再转为ndarray，最后喂给model；
         - 二者的不同之处在于使用的先后位置不一样。
+    - **一个比较好的特征选择方法是：**
+        - 每次构造的特征计算其在训练集和测试集上的均值和方差，保证分布相同，差不多则放入模型训练
 '''
 
 
