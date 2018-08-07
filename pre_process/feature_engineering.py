@@ -17,6 +17,17 @@ import numpy as np
 import warnings
 from sklearn.preprocessing import StandardScaler
 
+"""
+feature engineering：
+	- Feature types: raw features, statistic features, time-series features, cross features. 
+	- statistic features needs to do Bayesian smooth
+	- time-series features such as the number of installed app before clicktime, the number of installed app of the same type before clicktime
+	- How to select cross features? use xgb features importance -> run xgb again to get updated features importance
+	- How to code cross features? 1. Hash and onehotencoding  2. groupby -> transfer cross features to statistic features   
+	- Gaussian_Normalization maybe can make output better
+"""
+
+
 def feature_engineer(object):
 	def __init__(self, train, test, col_name):
 		self.train = train
@@ -34,3 +45,10 @@ def feature_engineer(object):
 			self.test[col] = scaler.transform(self.test[col])
 
 		return self.train, self.test
+
+
+
+
+
+
+
